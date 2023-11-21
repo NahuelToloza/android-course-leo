@@ -6,6 +6,7 @@
     tools:context=".ui.fragments.HomeFragment">
 
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textSize="22sp"
