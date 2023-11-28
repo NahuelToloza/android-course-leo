@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getParameters() {
-        val email = args.email
+        val email = args.user.email
         binding.tvTitle.text = "Hola, $email"
     }
 

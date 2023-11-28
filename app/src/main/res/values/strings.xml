@@ -4,6 +4,9 @@
     <string name="this_is_the_home">Estas en la pantalla de la home</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hint_email">Ingrese email</string>
-    <string name="hint_password">hola1234</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="input_user_data">Ingrese sus datos</string>
+    <string name="error_invalid_credentials">Las credenciales son invalidas</string>
+    <string name="register">Registrarme</string>
 </resources>
