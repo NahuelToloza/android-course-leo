@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.databinding.FragmentRegisterBinding
-import com.example.pokemonclasses.persistence.SharedPreferencesManager
+import com.example.pokemonclasses.persistence.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
@@ -30,7 +33,9 @@ class RegisterFragment : Fragment() {
                 email = binding.etEmail.text.toString(),
                 password = binding.etPassword.text.toString(),
             )
-            SharedPreferencesManager().saveUser(requireActivity(), user)
+            lifecycleScope.launch(Dispatchers.IO) {
+                UserRepository(requireActivity()).saveUser(user)
+            }
 
             // Navigate to login
             val action = RegisterFragmentDirections.actionLoginFragmentToLoginFragment()

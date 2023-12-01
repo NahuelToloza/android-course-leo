@@ -7,14 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.databinding.FragmentLoginBinding
 import com.example.pokemonclasses.persistence.SharedPreferencesManager
+import com.example.pokemonclasses.persistence.repository.UserRepository
 import com.example.pokemonclasses.utils.gone
 import com.example.pokemonclasses.utils.isValidEmail
 import com.example.pokemonclasses.utils.isValidPassword
 import com.example.pokemonclasses.utils.visible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
@@ -38,7 +43,7 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             loginButtonClicked()
         }
-        binding.btnRegister.setOnClickListener {
+        binding.tvRegister.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
         }
         binding.etEmail.addTextChangedListener(object : TextWatcher {
@@ -68,7 +73,8 @@ class LoginFragment : Fragment() {
                 handleEnabledButton()
                 val password = text.toString()
                 if (password.isValidPassword().not()) {
-                    binding.etPassword.error = "La contrasenia no es valida, deberia tener una minuscula, mayuscula y numeros"
+                    binding.etPassword.error =
+                        "La contrasenia no es valida, deberia tener una minuscula, mayuscula y numeros"
                 }
             }
         })
@@ -78,13 +84,19 @@ class LoginFragment : Fragment() {
         // validate
         val email = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()
-        val savedUser = SharedPreferencesManager().getUser(requireActivity())
-        if (savedUser.email == email && savedUser.password == password){
-            val user = User(email, password)
-            val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment(user)
-            findNavController().navigate(action)
-        } else {
-            binding.tvLoginError.visible()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val savedUser = UserRepository(requireActivity()).getUser(email)
+            if (savedUser != null && savedUser.email == email && savedUser.password == password) {
+                val user = User(email, password)
+                withContext(Dispatchers.Main) {
+                    val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment(user)
+                    findNavController().navigate(action)
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    binding.tvLoginError.visible()
+                }
+            }
         }
     }
 
