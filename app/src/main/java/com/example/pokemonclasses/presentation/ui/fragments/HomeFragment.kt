@@ -1,4 +1,4 @@
-package com.example.pokemonclasses.ui.fragments
+package com.example.pokemonclasses.presentation.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

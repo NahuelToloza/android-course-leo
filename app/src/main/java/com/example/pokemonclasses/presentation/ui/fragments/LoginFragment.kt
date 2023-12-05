@@ -1,4 +1,4 @@
-package com.example.pokemonclasses.ui.fragments
+package com.example.pokemonclasses.presentation.ui.fragments
 
 import android.os.Bundle
 import android.text.Editable
@@ -7,23 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.databinding.FragmentLoginBinding
-import com.example.pokemonclasses.persistence.SharedPreferencesManager
-import com.example.pokemonclasses.persistence.repository.UserRepository
+import com.example.pokemonclasses.presentation.ui.viewmodel.LoginViewModel
 import com.example.pokemonclasses.utils.gone
 import com.example.pokemonclasses.utils.isValidEmail
 import com.example.pokemonclasses.utils.isValidPassword
 import com.example.pokemonclasses.utils.visible
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +34,19 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupObservers()
         setupClickListeners()
+    }
+
+    private fun setupObservers() {
+        viewModel.uiState.observe(viewLifecycleOwner) { uiModel ->
+            uiModel.navigateToHome?.getContentIfNotHandled()?.let { user ->
+                navigateToHomeFragment(user)
+            }
+            uiModel.showErrorInvalidUser?.getContentIfNotHandled()?.let {
+                showErrorInvalidUser()
+            }
+        }
     }
 
     private fun setupClickListeners() {
@@ -84,20 +94,7 @@ class LoginFragment : Fragment() {
         // validate
         val email = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()
-        lifecycleScope.launch(Dispatchers.IO) {
-            val savedUser = UserRepository(requireActivity()).getUser(email)
-            if (savedUser != null && savedUser.email == email && savedUser.password == password) {
-                val user = User(email, password)
-                withContext(Dispatchers.Main) {
-                    val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment(user)
-                    findNavController().navigate(action)
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    binding.tvLoginError.visible()
-                }
-            }
-        }
+        viewModel.loginButtonClicked(email, password, requireActivity())
     }
 
     private fun handleEnabledButton() {
@@ -105,5 +102,14 @@ class LoginFragment : Fragment() {
         val password = binding.etPassword.text.toString()
         binding.btnLogin.isEnabled = (email.isNotEmpty() && password.isNotEmpty())
         binding.tvLoginError.gone()
+    }
+
+    private fun navigateToHomeFragment(user: User) {
+        val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment(user)
+        findNavController().navigate(action)
+    }
+
+    private fun showErrorInvalidUser() {
+        binding.tvLoginError.visible()
     }
 }

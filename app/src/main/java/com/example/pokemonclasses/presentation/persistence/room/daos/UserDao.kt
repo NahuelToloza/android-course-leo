@@ -1,11 +1,11 @@
-package com.example.pokemonclasses.persistence.room.daos
+package com.example.pokemonclasses.presentation.persistence.room.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pokemonclasses.data.User
-import com.example.pokemonclasses.persistence.room.entities.UserEntity
+import com.example.pokemonclasses.presentation.persistence.room.entities.UserEntity
 
 @Dao
 interface UserDao {

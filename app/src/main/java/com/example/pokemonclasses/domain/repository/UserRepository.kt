@@ -1,8 +1,8 @@
-package com.example.pokemonclasses.persistence.repository
+package com.example.pokemonclasses.domain.repository
 
 import androidx.fragment.app.FragmentActivity
 import com.example.pokemonclasses.data.User
-import com.example.pokemonclasses.persistence.room.AppDatabase
+import com.example.pokemonclasses.presentation.persistence.room.AppDatabase
 
 class UserRepository(activity: FragmentActivity) {
     private val dao = AppDatabase.getInstance(activity.applicationContext).userDao()

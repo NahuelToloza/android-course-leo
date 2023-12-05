@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.pokemonclasses.ui.fragments.LoginFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.LoginFragment"
         android:label="loginFragment"
         tools:layout="@layout/fragment_login" >
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.pokemonclasses.ui.fragments.RegisterFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.RegisterFragment"
         android:label="registerFragment"
         tools:layout="@layout/fragment_register" >
         <action
@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.pokemonclasses.ui.fragments.HomeFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.HomeFragment"
         android:label="homeFragment"
         tools:layout="@layout/fragment_home">
         <argument
@@ -44,7 +44,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.pokemonclasses.ui.fragments.SettingsFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.SettingsFragment"
         android:label="settingsFragment"
         tools:layout="@layout/fragment_settings" />
 </navigation>

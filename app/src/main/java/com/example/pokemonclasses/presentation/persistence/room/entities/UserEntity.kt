@@ -1,4 +1,4 @@
-package com.example.pokemonclasses.persistence.room.entities
+package com.example.pokemonclasses.presentation.persistence.room.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

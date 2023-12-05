@@ -1,4 +1,4 @@
-package com.example.pokemonclasses.persistence
+package com.example.pokemonclasses.presentation.persistence
 
 import android.app.Activity
 import android.content.Context

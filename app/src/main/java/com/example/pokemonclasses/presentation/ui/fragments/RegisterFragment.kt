@@ -1,4 +1,4 @@
-package com.example.pokemonclasses.ui.fragments
+package com.example.pokemonclasses.presentation.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.databinding.FragmentRegisterBinding
-import com.example.pokemonclasses.persistence.repository.UserRepository
+import com.example.pokemonclasses.domain.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

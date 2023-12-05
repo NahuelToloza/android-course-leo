@@ -1,11 +1,11 @@
-package com.example.pokemonclasses.persistence.room
+package com.example.pokemonclasses.presentation.persistence.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.pokemonclasses.persistence.room.daos.UserDao
-import com.example.pokemonclasses.persistence.room.entities.UserEntity
+import com.example.pokemonclasses.presentation.persistence.room.daos.UserDao
+import com.example.pokemonclasses.presentation.persistence.room.entities.UserEntity
 
 @Database(entities = [UserEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {

@@ -1,7 +1,7 @@
 package com.example.pokemonclasses.data
 
 import android.os.Parcelable
-import com.example.pokemonclasses.persistence.room.entities.UserEntity
+import com.example.pokemonclasses.presentation.persistence.room.entities.UserEntity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
