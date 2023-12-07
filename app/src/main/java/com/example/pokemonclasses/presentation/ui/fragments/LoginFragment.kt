@@ -16,7 +16,9 @@ import com.example.pokemonclasses.utils.gone
 import com.example.pokemonclasses.utils.isValidEmail
 import com.example.pokemonclasses.utils.isValidPassword
 import com.example.pokemonclasses.utils.visible
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -94,7 +96,7 @@ class LoginFragment : Fragment() {
         // validate
         val email = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()
-        viewModel.loginButtonClicked(email, password, requireActivity())
+        viewModel.loginButtonClicked(email, password)
     }
 
     private fun handleEnabledButton() {

@@ -10,12 +10,18 @@ import androidx.navigation.fragment.findNavController
 import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.databinding.FragmentRegisterBinding
 import com.example.pokemonclasses.domain.repository.UserRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
+
+    @Inject lateinit var userRepository: UserRepository
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,7 +40,7 @@ class RegisterFragment : Fragment() {
                 password = binding.etPassword.text.toString(),
             )
             lifecycleScope.launch(Dispatchers.IO) {
-                UserRepository(requireActivity()).saveUser(user)
+                userRepository.saveUser(user)
             }
 
             // Navigate to login

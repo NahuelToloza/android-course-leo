@@ -1,30 +1,35 @@
 package com.example.pokemonclasses.presentation.ui.viewmodel
 
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.domain.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 data class LoginUiModel(
     val navigateToHome: Event<User?>? = null,
     val showErrorInvalidUser: Event<Unit?>? = null,
 )
 
-class LoginViewModel: ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+) : ViewModel() {
 
     private val _uiState: MutableLiveData<LoginUiModel> = MutableLiveData()
     val uiState: LiveData<LoginUiModel>
         get() = _uiState
 
-    fun loginButtonClicked(email: String, password: String, activity: FragmentActivity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val savedUser = UserRepository(activity).getUser(email)
+    fun loginButtonClicked(
+        email: String, password: String
+    ) { viewModelScope.launch(Dispatchers.IO) {
+            val savedUser = userRepository.getUser(email)
             if (savedUser != null && savedUser.email == email && savedUser.password == password) {
                 val user = User(email, password)
                 updateUiModel(navigateToHome = user)
