@@ -9,4 +9,5 @@
     <string name="input_user_data">Ingrese sus datos</string>
     <string name="error_invalid_credentials">Las credenciales son invalidas</string>
     <string name="register">Registrarme</string>
+    <string name="pokemon_name">pokemonName</string>
 </resources>

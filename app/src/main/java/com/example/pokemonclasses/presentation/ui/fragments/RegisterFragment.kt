@@ -45,7 +45,7 @@ class RegisterFragment : Fragment() {
 
             // Navigate to login
             val action = RegisterFragmentDirections.actionLoginFragmentToLoginFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(RegisterFragmentDirections.actionLoginFragmentToLoginFragment())
         }
     }
 }

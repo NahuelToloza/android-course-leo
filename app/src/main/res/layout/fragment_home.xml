@@ -3,17 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.fragments.HomeFragment">
+    tools:context=".presentation.ui.fragments.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/tv_title"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="22sp"
-        android:textColor="@color/secondary_red"
-        android:background="@color/black"
-        android:gravity="center"
-        android:text="@string/hello_blank_fragment"
         />
 
 </FrameLayout>
