@@ -65,10 +65,10 @@ class HomeFragment : Fragment() {
                 "https://th.bing.com/th/id/R.fd50e335da0518878dc916fe107759a1?rik=237fShUHn4NuGw&pid=ImgRaw&r=0",
                 "alakazan"
             ),
-            Pokemon(
-                "https://th.bing.com/th/id/R.fd50e335da0518878dc916fe107759a1?rik=237fShUHn4NuGw&pid=ImgRaw&r=0",
-                "alakazan2"
-            ),
+//            Pokemon(
+//                "https://th.bing.com/th/id/R.fd50e335da0518878dc916fe107759a1?rik=237fShUHn4NuGw&pid=ImgRaw&r=0",
+//                "alakazan2"
+//            ),
         )
 
         val adapter = PokemonListAdapter(pokemonList)
