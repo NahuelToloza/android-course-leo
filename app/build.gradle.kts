@@ -5,6 +5,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -73,7 +74,12 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.49")
 
     //glide library
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Moshi
+    implementation ("com.squareup.moshi:moshi-kotlin:1.13.0")
+    // Retrofit with Moshi Converter
+    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
 }
 
 // Allow references to generated code
