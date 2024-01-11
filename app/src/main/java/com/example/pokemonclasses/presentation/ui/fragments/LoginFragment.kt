@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.databinding.FragmentLoginBinding
 import com.example.pokemonclasses.presentation.ui.viewmodel.LoginViewModel
 import com.example.pokemonclasses.utils.gone
@@ -38,12 +37,13 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         setupClickListeners()
+        setupData()
     }
 
     private fun setupObservers() {
         viewModel.uiState.observe(viewLifecycleOwner) { uiModel ->
-            uiModel.navigateToHome?.getContentIfNotHandled()?.let { user ->
-                navigateToHomeFragment(user)
+            uiModel.navigateToHome?.getContentIfNotHandled()?.let {
+                navigateToHomeFragment()
             }
             uiModel.showErrorInvalidUser?.getContentIfNotHandled()?.let {
                 showErrorInvalidUser()
@@ -92,6 +92,10 @@ class LoginFragment : Fragment() {
         })
     }
 
+    private fun setupData() {
+        viewModel.setupData()
+    }
+
     private fun loginButtonClicked() {
         // validate
         val email = binding.etEmail.text.toString()
@@ -106,8 +110,8 @@ class LoginFragment : Fragment() {
         binding.tvLoginError.gone()
     }
 
-    private fun navigateToHomeFragment(user: User) {
-        val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment(user)
+    private fun navigateToHomeFragment() {
+        val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
         findNavController().navigate(action)
     }
 

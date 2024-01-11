@@ -2,6 +2,7 @@ package com.example.pokemonclasses.presentation.di
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import androidx.room.Room
@@ -15,9 +16,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -51,8 +55,14 @@ class ServicesModule {
     @Provides
     @Singleton
     fun provideRetrofit(baseUrl: BaseUrl, moshi: Moshi): Retrofit {
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val httpClient = OkHttpClient.Builder()
+        httpClient.addInterceptor(logging)
+
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(httpClient.build())
             .baseUrl(baseUrl.url!!)
             .build()
     }
@@ -71,7 +81,17 @@ class ServicesModule {
         return retrofit.create(PokemonApiService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+    }
+
     data class BaseUrl(
         val url: String?
     )
+
+    companion object {
+        private const val SHARED_PREFERENCES_KEY = "app_preference"
+    }
 }

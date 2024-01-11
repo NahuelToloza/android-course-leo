@@ -80,6 +80,12 @@ dependencies {
     implementation ("com.squareup.moshi:moshi-kotlin:1.13.0")
     // Retrofit with Moshi Converter
     implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    // OkHttp and LoginInterceptor (To see in logcat requests and responses)
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
 }
 
 // Allow references to generated code

@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokemonclasses.data.Pokemon
 import com.example.pokemonclasses.databinding.FragmentHomeBinding
+import com.example.pokemonclasses.utils.gone
+import com.example.pokemonclasses.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val args: HomeFragmentArgs by navArgs()
 
     private var pokemonList: MutableList<PokemonItem> = mutableListOf()
     private lateinit var adapter: PokemonListAdapter
@@ -34,7 +34,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getParameters()
         setupObservers()
         setupListeners()
         viewModel.getAllPokemons()
@@ -56,14 +55,17 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun getParameters() {
-        val email = args.user.email
-//        binding.tvTitle.text = "Hola, $email"
-    }
-
     private fun setupObservers() {
-        viewModel.pokemonsLiveData.observe(viewLifecycleOwner) {
-            setupRecyclerView(it)
+        viewModel.uiState.observe(viewLifecycleOwner) {
+            it.showPokemonList?.getContentIfNotHandled()?.let { list ->
+                binding.tvErrorMessage.gone()
+                setupRecyclerView(list)
+            }
+            it.showError?.getContentIfNotHandled()?.let { error ->
+                val errorText = "${error.errorCodeType!!.code}: ${error.errorCodeType.message}"
+                binding.tvErrorMessage.visible()
+                binding.tvErrorMessage.text = errorText
+            }
         }
     }
 

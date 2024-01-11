@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.databinding.FragmentRegisterBinding
-import com.example.pokemonclasses.domain.repository.UserRepository
+import com.example.pokemonclasses.data.repository.UserRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

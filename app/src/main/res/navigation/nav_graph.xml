@@ -33,10 +33,6 @@
         android:name="com.example.pokemonclasses.presentation.ui.fragments.home.HomeFragment"
         android:label="homeFragment"
         tools:layout="@layout/fragment_home">
-        <argument
-            android:name="user"
-            app:argType="com.example.pokemonclasses.data.User"
-            />
         <action
             android:id="@+id/action_homeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
