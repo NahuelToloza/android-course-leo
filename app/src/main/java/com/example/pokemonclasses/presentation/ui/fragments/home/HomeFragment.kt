@@ -2,12 +2,18 @@ package com.example.pokemonclasses.presentation.ui.fragments.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pokemonclasses.R
 import com.example.pokemonclasses.data.Pokemon
 import com.example.pokemonclasses.databinding.FragmentHomeBinding
 import com.example.pokemonclasses.utils.gone

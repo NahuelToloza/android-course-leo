@@ -10,4 +10,5 @@
     <string name="error_invalid_credentials">Las credenciales son invalidas</string>
     <string name="register">Registrarme</string>
     <string name="pokemon_name">pokemonName</string>
+    <string name="logout">Cerrar sesion</string>
 </resources>

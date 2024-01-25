@@ -86,6 +86,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
+    //Lottie animation
+    implementation ("com.airbnb.android:lottie:6.3.0")
 }
 
 // Allow references to generated code

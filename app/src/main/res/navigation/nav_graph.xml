@@ -43,4 +43,10 @@
         android:name="com.example.pokemonclasses.presentation.ui.fragments.SettingsFragment"
         android:label="settingsFragment"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/logoutFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.home.menu.LogoutFragment"
+        android:label="logoutFragment"
+        tools:layout="@layout/fragment_logout" />
 </navigation>
