@@ -17,6 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="loading_animation.json"
+        app:lottie_fileName="animation_truck_4x4.json"
         app:lottie_loop="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>

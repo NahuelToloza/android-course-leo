@@ -1,7 +1,6 @@
 package com.example.pokemonclasses.presentation.ui.activities
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -42,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         val navController = getNavController()
 
         binding.navView.setupWithNavController(navController)
+        // setOf([Id de fragment de nivel superior -> icon de hamburguesa])
         appBarConfiguration = AppBarConfiguration(setOf(R.id.homeFragment), binding.drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
@@ -49,10 +49,13 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             supportActionBar?.show()
             when {
-                FRAGMENTS_WITHOUT_TOOLBAR_ICON.all { it == destination.id } -> supportActionBar?.setDisplayHomeAsUpEnabled(
-                    false
-                )
-                R.id.logoutFragment == destination.id -> supportActionBar?.hide()
+                FRAGMENTS_WITHOUT_TOOLBAR_ICON.all { it == destination.id } ->
+                    // Hide icon left toolbar
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
+                //Ocultar toolbar
+                (R.id.logoutFragment == destination.id) -> supportActionBar?.hide()
+
                 else -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
         }
@@ -60,6 +63,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private val FRAGMENTS_WITHOUT_TOOLBAR_ICON =
-            listOf(R.id.loginFragment, R.id.registerFragment)
+            listOf(R.id.loginFragment)
     }
 }
