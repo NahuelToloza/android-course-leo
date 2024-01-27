@@ -48,7 +48,11 @@
         android:id="@+id/logoutFragment"
         android:name="com.example.pokemonclasses.presentation.ui.fragments.home.menu.LogoutFragment"
         android:label="logoutFragment"
-        tools:layout="@layout/fragment_logout" />
+        tools:layout="@layout/fragment_logout" >
+        <action
+            android:id="@+id/action_logoutFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 </navigation>
 
 

@@ -29,4 +29,6 @@ class UserRepository @Inject constructor(
     fun isUserLogged() = sharedPreferencesManager.isUserLogged()
 
     fun setUserLogged() = sharedPreferencesManager.setUserLogged()
+
+    fun setUserUnLogged()= sharedPreferencesManager.setUserUnLogged()
 }

@@ -16,6 +16,10 @@ class SharedPreferencesManager @Inject constructor(
         setAppData(true)
     }
 
+    fun setUserUnLogged(){
+        setAppData(false)
+    }
+
     fun saveUser(activity: Activity, user: User) {
         sharedPreferences.edit {
             putString(EMAIL, user.email)
