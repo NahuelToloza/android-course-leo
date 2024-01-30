@@ -2,20 +2,16 @@ package com.example.pokemonclasses.presentation.ui.fragments.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pokemonclasses.R
 import com.example.pokemonclasses.data.Pokemon
 import com.example.pokemonclasses.databinding.FragmentHomeBinding
+import com.example.pokemonclasses.presentation.ui.viewmodel.MainViewModel
 import com.example.pokemonclasses.utils.gone
 import com.example.pokemonclasses.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +25,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: PokemonListAdapter
 
     private val viewModel: HomeViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,13 +70,15 @@ class HomeFragment : Fragment() {
                 binding.tvErrorMessage.text = errorText
             }
         }
+        mainViewModel.navigateToProfile.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
+                val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment()
+                findNavController().navigate(action)
+            }
+        }
     }
 
     private fun setupListeners() {
-        binding.root.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
-            findNavController().navigate(action)
-        }
         binding.fabAddPokemon.setOnClickListener {
             addNewPokemon()
         }
