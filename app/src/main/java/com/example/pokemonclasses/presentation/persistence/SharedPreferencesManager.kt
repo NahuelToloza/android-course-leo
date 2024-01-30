@@ -10,10 +10,10 @@ class SharedPreferencesManager @Inject constructor(
     private val sharedPreferences: SharedPreferences,
 ) {
 
-    fun isUserLogged() = getAppData().isUserLogged
+    fun isUserLogged() = getAppData().loggedEmail != null
 
-    fun setUserLogged() {
-        setAppData(true)
+    fun setUserLogged(email: String) {
+        setAppData(email)
     }
 
     fun setUserUnLogged(){
@@ -35,14 +35,14 @@ class SharedPreferencesManager @Inject constructor(
         )
     }
 
-    private fun getAppData(): AppData {
-        val isUserLogged = sharedPreferences.getBoolean(IS_USER_LOGGED, false)
+    fun getAppData(): AppData {
+        val isUserLogged = sharedPreferences.getString(LOGGED_EMAIL, null)
         return AppData(isUserLogged)
     }
 
-    private fun setAppData(isUserLogged: Boolean) {
+    private fun setAppData(loggedEmail: String) {
         sharedPreferences.edit {
-            putBoolean(IS_USER_LOGGED, isUserLogged)
+            putString(LOGGED_EMAIL, loggedEmail)
             apply()
         }
     }
@@ -50,6 +50,6 @@ class SharedPreferencesManager @Inject constructor(
     companion object {
         const val EMAIL = "email"
         const val PASSWORD = "password"
-        const val IS_USER_LOGGED = "IS_USER_LOGGED"
+        const val LOGGED_EMAIL = "LOGGED_EMAIL"
     }
 }

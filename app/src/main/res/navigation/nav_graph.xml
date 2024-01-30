@@ -34,15 +34,15 @@
         android:label="homeFragment"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.example.pokemonclasses.presentation.ui.fragments.SettingsFragment"
-        android:label="settingsFragment"
-        tools:layout="@layout/fragment_settings" />
+        android:id="@+id/profileFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.ProfileFragment"
+        android:label="profileFragment"
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/logoutFragment"

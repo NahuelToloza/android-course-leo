@@ -37,7 +37,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val savedUser = userRepository.getUser(email)
             if (savedUser != null && savedUser.email == email && savedUser.password == password) {
-                userRepository.setUserLogged()
+                userRepository.setUserLogged(email)
                 emitUiModel(navigateToHome = Unit)
             } else {
                 emitUiModel(showErrorInvalidUser = Unit)

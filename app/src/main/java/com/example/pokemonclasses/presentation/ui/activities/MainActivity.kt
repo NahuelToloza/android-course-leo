@@ -1,6 +1,8 @@
 package com.example.pokemonclasses.presentation.ui.activities
 
 import android.os.Bundle
+import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -9,12 +11,15 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.pokemonclasses.R
 import com.example.pokemonclasses.databinding.ActivityMainBinding
+import com.example.pokemonclasses.presentation.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +63,15 @@ class MainActivity : AppCompatActivity() {
 
                 else -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
+        }
+        setupProfileImageClick()
+    }
+
+    private fun setupProfileImageClick() {
+        val headerView = binding.navView.getHeaderView(0)
+        val profileImage = headerView.findViewById<ImageView>(R.id.img_photo)
+        profileImage.setOnClickListener {
+            mainViewModel.onProfileImageClicked()
         }
     }
 

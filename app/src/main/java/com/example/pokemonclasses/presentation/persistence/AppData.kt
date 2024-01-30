@@ -1,5 +1,5 @@
 package com.example.pokemonclasses.presentation.persistence
 
 data class AppData(
-    val isUserLogged: Boolean
+    val loggedEmail: String? = null,
 )
