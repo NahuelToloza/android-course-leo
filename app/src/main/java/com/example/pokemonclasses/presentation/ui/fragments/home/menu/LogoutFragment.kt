@@ -8,13 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import com.example.pokemonclasses.R
 import com.example.pokemonclasses.databinding.FragmentLogoutBinding
-import com.example.pokemonclasses.presentation.ui.fragments.LoginFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class LogoutFragment: Fragment() {
@@ -32,20 +29,27 @@ class LogoutFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateData()
-        navigateToLogginFragment()
+        setupObservers()
+        logoutUser()
     }
 
-    private fun navigateToLogginFragment() {
+    private fun setupObservers() {
+        viewModel.uiState.observe(viewLifecycleOwner){
+            navigateToLoginFragment()
+        }
+    }
+
+    private fun logoutUser() {
+        viewModel.logoutUser()
+    }
+
+    private fun navigateToLoginFragment() {
         val action = LogoutFragmentDirections.actionLogoutFragmentToLoginFragment()
+        //TODO ELIMINATE DELAY
         Handler(Looper.getMainLooper()).postDelayed({
             // navigate to fragment after 3 seconds to be able to appreciate the animation
             findNavController().navigate(action)
-        }, 3000) // = 3 seconds
-    }
-
-    private fun updateData() {
-        viewModel.updateData()
+        }, 3000) // 3000 Millis = 3 seconds
     }
 
     override fun onDestroyView() {
