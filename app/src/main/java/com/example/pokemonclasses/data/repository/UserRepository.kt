@@ -28,9 +28,10 @@ class UserRepository @Inject constructor(
 
     fun isUserLogged() = sharedPreferencesManager.isUserLogged()
 
+    fun setUserUnLogged()= sharedPreferencesManager.setUserUnLogged()
+
     fun getLoggedEmail() = sharedPreferencesManager.getAppData().loggedEmail
 
     fun setUserLogged(email: String) = sharedPreferencesManager.setUserLogged(email)
-    //Aguanten los conflictos
-    //Ahre
+
 }
