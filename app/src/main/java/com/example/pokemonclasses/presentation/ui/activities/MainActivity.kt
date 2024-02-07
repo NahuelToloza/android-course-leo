@@ -1,5 +1,6 @@
 package com.example.pokemonclasses.presentation.ui.activities
 
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.viewModels
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupObservers()
         setupViews()
     }
 
@@ -34,12 +36,25 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 
+    private fun setupObservers() {
+        mainViewModel.showDrawerData.observe(this) {
+            it.getContentIfNotHandled()?.let { uri ->
+                setupProfileImage(uri)
+            }
+        }
+    }
+
     private fun getNavController() =
         (supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment).navController
 
     private fun setupViews() {
         setSupportActionBar(binding.toolbar)
         setupDrawerMenu()
+        val headerView = binding.navView.getHeaderView(0)
+        val profileImage = headerView.findViewById<ImageView>(R.id.img_photo)
+        profileImage.setOnClickListener {
+            mainViewModel.onProfileImageClicked()
+        }
     }
 
     private fun setupDrawerMenu() {
@@ -64,15 +79,14 @@ class MainActivity : AppCompatActivity() {
                 else -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
         }
-        setupProfileImageClick()
+        mainViewModel.getDrawerData()
     }
 
-    private fun setupProfileImageClick() {
+    private fun setupProfileImage(uri: Uri) {
         val headerView = binding.navView.getHeaderView(0)
         val profileImage = headerView.findViewById<ImageView>(R.id.img_photo)
-        profileImage.setOnClickListener {
-            mainViewModel.onProfileImageClicked()
-        }
+
+        profileImage.setImageURI(uri)
     }
 
     companion object {

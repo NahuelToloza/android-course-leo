@@ -22,8 +22,8 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getUser(email: String): User? {
-        return userDao.getUser(email)
+    fun getUser(email: String?): User? {
+        return userDao.getUser(email)?.toUser()
     }
 
     fun isUserLogged() = sharedPreferencesManager.isUserLogged()
