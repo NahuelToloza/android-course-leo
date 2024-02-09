@@ -45,24 +45,24 @@ class ProfileFragment : Fragment() {
     private lateinit var imageCapture : ImageCapture
 
 
-    private val requestTakePhoto = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { bitmap ->
-
-    }
+//    private val requestTakePhoto = registerForActivityResult(
+//        ActivityResultContracts.TakePicture()
+//    ) { bitmap ->
+//
+//    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-//            starCamera()
-            val file: File = File(requireActivity().filesDir, "picFromCamera")
-            val uri = FileProvider.getUriForFile(
-                requireContext(),
-                requireActivity().getApplication().getPackageName() + ".provider",
-                file
-            )
-            requestTakePhoto.launch(uri)
+            starCamera()
+//            val file: File = File(requireActivity().filesDir, "picFromCamera")
+//            val uri = FileProvider.getUriForFile(
+//                requireContext(),
+//                requireActivity().getApplication().getPackageName() + ".provider",
+//                file
+//            )
+//            requestTakePhoto.launch(uri)
         } else {
             Log.d("PERMISSION ANDROID", "isNOTGranted")
             // PERMISSION NOT GRANTED
@@ -104,13 +104,6 @@ class ProfileFragment : Fragment() {
     private fun setupListeners() {
         binding.imgProfile.setOnClickListener {
             askCameraPermission()
-
-//            val imageCapture = ImageCapture.Builder()
-//                .setTargetRotation(view.display.rotation)
-//                .build()
-//
-//            cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, imageCapture,
-//            imageAnalysis, preview)
         }
         binding.imageCaptureButton.setOnClickListener{
             takePhoto()
