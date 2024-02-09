@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.data.repository.UserRepository
 import com.example.pokemonclasses.presentation.ui.viewmodel.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,16 @@ data class LoginUiModel(
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
+
+    init {
+        //TODO: Remove hardcode user if is necessary
+        viewModelScope.launch(Dispatchers.IO) {
+            val testUser = userRepository.getUser("leo@gmail.com")
+            if (testUser == null) {
+                userRepository.saveUser(User("leo@gmail.com", "Hola123", null))
+            }
+        }
+    }
 
     private val _uiState: MutableLiveData<LoginUiModel> = MutableLiveData()
     val uiState: LiveData<LoginUiModel>

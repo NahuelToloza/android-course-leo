@@ -2,23 +2,19 @@ package com.example.pokemonclasses.presentation.ui.fragments.profile
 
 import android.Manifest
 import android.content.ContentValues
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,13 +25,12 @@ import com.example.pokemonclasses.databinding.FragmentProfileBinding
 import com.example.pokemonclasses.presentation.ui.viewmodel.ProfileViewModel
 import com.example.pokemonclasses.presentation.ui.viewmodel.SetupView
 import com.example.pokemonclasses.presentation.ui.viewmodel.profile.ProfilePictureCommunicationViewModel
-import com.example.pokemonclasses.utils.visible
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.util.Locale
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
@@ -45,35 +40,38 @@ class ProfileFragment : Fragment() {
     private val viewModel: ProfileViewModel by viewModels()
     private val communicationViewModel: ProfilePictureCommunicationViewModel by activityViewModels()
 
-    private lateinit var cameraExecutor: ExecutorService
-
-    private lateinit var imageCapture: ImageCapture
-
     private var uri: Uri? = null
 
     private val requestPickGallery = registerForActivityResult(
-        ActivityResultContracts.OpenDocumentTree()
-    ) { uri ->
-        binding.imgProfile.setImageURI(uri)
-        viewModel.profilePictureWasTaken(uri)
+        ActivityResultContracts.PickVisualMedia()
+    ) { imageUri ->
+        imageUri?.let {
+            val bitmap = if (Build.VERSION.SDK_INT >= 29) {
+                ImageDecoder.decodeBitmap(
+                    ImageDecoder.createSource(
+                        requireContext().contentResolver,
+                        imageUri
+                    )
+                )
+            } else {
+                MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+            }
+
+            getImageUriFromBitmap(bitmap)?.apply {
+                binding.imgProfile.setImageURI(this)
+                viewModel.profilePictureWasTaken(this)
+            }
+        }
     }
 
     private val requestGalleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-            if (permissions.all { it.value }) {
-                val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
-                    .format(System.currentTimeMillis()) + ".jpeg"
-                val file = File(requireActivity().getExternalFilesDir(null), name)
-                uri = FileProvider.getUriForFile(
-                    requireContext(),
-                    requireActivity().application.packageName + ".provider",
-                    file
-                )
-                requestPickGallery.launch(uri)
-            } else {
-                showMessage(R.string.gallery_permission_not_granted)
-            }
+        if (permissions.all { it.value }) {
+            requestPickGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } else {
+            showMessage(R.string.gallery_permission_not_granted)
+        }
     }
 
     private val requestTakePhoto = registerForActivityResult(
@@ -119,7 +117,6 @@ class ProfileFragment : Fragment() {
         setupObservers()
         setupListeners()
         viewModel.getProfileData()
-        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     override fun onDestroyView() {
@@ -143,7 +140,7 @@ class ProfileFragment : Fragment() {
         }
         communicationViewModel.clickGallery.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
-                requestGalleryPermissionLauncher.launch(arrayOf(Manifest.permission.READ_MEDIA_IMAGES))
+                requestGalleryPermissionLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
             }
         }
     }
@@ -154,9 +151,6 @@ class ProfileFragment : Fragment() {
             val action =
                 ProfileFragmentDirections.actionProfileFragmentToProfilePictureBottomSheetDialogFragment()
             findNavController().navigate(action)
-        }
-        binding.imageCaptureButton.setOnClickListener {
-            takePhoto()
         }
     }
 
@@ -169,95 +163,57 @@ class ProfileFragment : Fragment() {
         requestPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
-    private fun starCamera() {
-        showCamera()
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-
-        cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            // Preview
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                }
-
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
-                imageCapture = ImageCapture.Builder()
-                    .setTargetRotation(requireView().display.rotation)
-                    .build()
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
-                )
-
-            } catch (exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
-            }
-
-
-        }, ContextCompat.getMainExecutor(requireContext()))
-    }
-
-    private fun showCamera() {
-        binding.clPreviewView.visible()
-    }
-
-    private fun takePhoto() {
-        // Create time stamped name and MediaStore entry.
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
-            .format(System.currentTimeMillis())
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
-            }
-        }
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(
-                requireActivity().contentResolver,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
-            .build()
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun
-                        onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
-                    Toast.makeText(requireActivity(), msg, Toast.LENGTH_LONG).show()
-                    Log.d(TAG, msg)
-                }
-            }
-        )
-    }
-
     private fun showMessage(messageRes: Int) {
         Snackbar.make(binding.root, getString(messageRes), Snackbar.LENGTH_LONG).show()
     }
 
+    private fun getImageUriFromBitmap(bitmap: Bitmap): Uri? {
+        val filename = "IMG_${System.currentTimeMillis()}.jpg"
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            saveImageInQ(bitmap, filename)
+        } else {
+            saveImageInLegacy(bitmap, filename)
+        }
+    }
+
+    //Make sure to call this function on a worker thread, else it will block main thread
+    private fun saveImageInQ(bitmap: Bitmap, filename: String): Uri? {
+        var fos: OutputStream?
+        var imageUri: Uri?
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            put(MediaStore.Video.Media.IS_PENDING, 1)
+        }
+
+        val contentResolver = requireActivity().application.contentResolver
+
+        contentResolver.also { resolver ->
+            imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            fos = imageUri?.let { resolver.openOutputStream(it) }
+        }
+
+        fos?.use { bitmap.compress(Bitmap.CompressFormat.JPEG, 70, it) }
+
+        contentValues.clear()
+        contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
+        imageUri?.let { contentResolver.update(it, contentValues, null, null) }
+        return imageUri
+    }
+
+    //Make sure to call this function on a worker thread, else it will block main thread
+    private fun saveImageInLegacy(bitmap: Bitmap, filename: String): Uri? {
+        val imagesDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val image = File(imagesDir, filename)
+        val fos = FileOutputStream(image)
+        fos.use { bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it) }
+        return Uri.fromFile(requireContext().getFileStreamPath(filename))
+    }
+
     companion object {
-        private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 }
