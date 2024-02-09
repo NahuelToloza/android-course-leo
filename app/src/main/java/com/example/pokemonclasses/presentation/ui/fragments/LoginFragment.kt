@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pokemonclasses.databinding.FragmentLoginBinding
-import com.example.pokemonclasses.presentation.ui.viewmodel.LoginViewModel
+import com.example.pokemonclasses.presentation.ui.viewmodel.profile.LoginViewModel
 import com.example.pokemonclasses.utils.gone
 import com.example.pokemonclasses.utils.isValidEmail
 import com.example.pokemonclasses.utils.isValidPassword

@@ -1,7 +1,10 @@
 package com.example.pokemonclasses.presentation.ui.activities
 
+import android.Manifest
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
@@ -20,11 +23,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val mainViewModel: MainViewModel by viewModels()
+    private var imageUri: Uri? = null
+
+    private val requestGalleryPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.all { it.value }) {
+            setupProfileImage()
+        } else {
+            askReadStoragePermission()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupObservers()
         setupViews()
     }
 
@@ -34,12 +49,26 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 
+    private fun setupObservers() {
+        mainViewModel.showDrawerData.observe(this) {
+            it.getContentIfNotHandled()?.let { uri ->
+                imageUri = uri
+                askReadStoragePermission()
+            }
+        }
+    }
+
     private fun getNavController() =
         (supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment).navController
 
     private fun setupViews() {
         setSupportActionBar(binding.toolbar)
         setupDrawerMenu()
+        val headerView = binding.navView.getHeaderView(0)
+        val profileImage = headerView.findViewById<ImageView>(R.id.img_photo)
+        profileImage.setOnClickListener {
+            mainViewModel.onProfileImageClicked()
+        }
     }
 
     private fun setupDrawerMenu() {
@@ -52,6 +81,8 @@ class MainActivity : AppCompatActivity() {
 
         //Hide toolbar icon in some screens
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            // Update drawer header information
+            mainViewModel.getDrawerData()
             supportActionBar?.show()
             when {
                 FRAGMENTS_WITHOUT_TOOLBAR_ICON.all { it == destination.id } ->
@@ -64,15 +95,18 @@ class MainActivity : AppCompatActivity() {
                 else -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
         }
-        setupProfileImageClick()
+        mainViewModel.getDrawerData()
     }
 
-    private fun setupProfileImageClick() {
+    private fun setupProfileImage() {
         val headerView = binding.navView.getHeaderView(0)
         val profileImage = headerView.findViewById<ImageView>(R.id.img_photo)
-        profileImage.setOnClickListener {
-            mainViewModel.onProfileImageClicked()
-        }
+
+        profileImage.setImageURI(imageUri)
+    }
+
+    private fun askReadStoragePermission() {
+        requestGalleryPermissionLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
     }
 
     companion object {

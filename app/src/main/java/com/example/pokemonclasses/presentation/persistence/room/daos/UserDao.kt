@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.pokemonclasses.data.User
 import com.example.pokemonclasses.presentation.persistence.room.entities.UserEntity
 
 @Dao
@@ -16,5 +15,5 @@ interface UserDao {
     fun getAllUsers(): List<UserEntity>
 
     @Query ("SELECT * FROM userentity WHERE email = :emailToFind LIMIT 1")
-    fun getUser(emailToFind: String): User?
+    fun getUser(emailToFind: String?): UserEntity?
 }

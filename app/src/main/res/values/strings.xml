@@ -12,4 +12,12 @@
     <string name="pokemon_name">pokemonName</string>
     <string name="logout">Cerrar sesion</string>
     <string name="btn_take_photo">take photo</string>
+    <string name="error_user_not_found">Usuario no encontrado</string>
+    <string name="profile_picture_saved">La imagen se guardo con exito</string>
+    <string name="camera_permission_not_granted">Por favor garantizar permiso de la camara xD</string>
+    <string name="error_picture_not_saved">La imagen no se guardo correctamente, por favor vuelva a intentar</string>
+    <string name="camera">Camara</string>
+    <string name="gallery">Galeria</string>
+    <string name="select_picture_source">Eligue de donde quiere sacar la foto\n</string>
+    <string name="gallery_permission_not_granted">Por favor garantizar permiso de la galeria</string>
 </resources>

@@ -40,9 +40,13 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.pokemonclasses.presentation.ui.fragments.ProfileFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.profile.ProfileFragment"
         android:label="profileFragment"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_profilePictureBottomSheetDialogFragment"
+            app:destination="@id/profilePictureBottomSheetDialogFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/logoutFragment"
@@ -53,6 +57,12 @@
             android:id="@+id/action_logoutFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+
+    <dialog
+        android:id="@+id/profilePictureBottomSheetDialogFragment"
+        android:name="com.example.pokemonclasses.presentation.ui.fragments.profile.ProfilePictureBottomSheetDialogFragment"
+        android:label="profilePictureBottomSheetDialogFragment"
+        tools:layout="@layout/bottom_fragment_profile_picture" />
 </navigation>
 
 

@@ -38,6 +38,7 @@ class RegisterFragment : Fragment() {
             val user = User(
                 email = binding.etEmail.text.toString(),
                 password = binding.etPassword.text.toString(),
+                profilePicture = null
             )
             lifecycleScope.launch(Dispatchers.IO) {
                 userRepository.saveUser(user)
